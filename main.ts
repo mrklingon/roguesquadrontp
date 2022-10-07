@@ -22,6 +22,12 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.target, function (sprite, ot
     music.knock.play()
     info.changeScoreBy(randint(5, 10))
 })
+sprites.onCreated(SpriteKind.target, function (sprite) {
+    drones += 1
+})
+sprites.onDestroyed(SpriteKind.target, function (sprite) {
+    drones += -1
+})
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     speed += 1
     if (5 < speed) {
@@ -51,6 +57,7 @@ let zap: Sprite = null
 let xwing: Sprite = null
 let speed = 0
 let lift = 0
+let maxdrones = 5
 game.splash("Rogue Squadron", "Target Practice")
 lift = 0
 scene.setBackgroundColor(9)
@@ -63,17 +70,22 @@ xwing.setPosition(71, 50)
 xwing.setStayInScreen(true)
 info.setLife(10)
 controller.moveSprite(xwing)
+let drones = 0
 forever(function () {
-    pause(200 / speed * randint(10, 20))
-    drone = sprites.create(assets.image`smallDrone`, SpriteKind.target)
-    drone.setPosition(150, randint(-10, 110))
-    drone.setVelocity(-30 * speed, 0)
-    drone.setFlag(SpriteFlag.AutoDestroy, true)
+    if (drones < maxdrones) {
+        pause(200 / speed * randint(10, 20))
+        drone = sprites.create(assets.image`smallDrone`, SpriteKind.target)
+        drone.setPosition(150, randint(-10, 110))
+        drone.setVelocity(-30 * speed, 0)
+        drone.setFlag(SpriteFlag.AutoDestroy, true)
+    }
 })
 forever(function () {
-    pause(300 / speed * randint(10, 20))
-    drone = sprites.create(assets.image`BigDrone`, SpriteKind.target)
-    drone.setPosition(150, randint(-10, 110))
-    drone.setVelocity(-30 * speed, 0)
-    drone.setFlag(SpriteFlag.AutoDestroy, true)
+    if (drones < maxdrones) {
+        pause(300 / speed * randint(10, 20))
+        drone = sprites.create(assets.image`BigDrone`, SpriteKind.target)
+        drone.setPosition(150, randint(-10, 110))
+        drone.setVelocity(-30 * speed, 0)
+        drone.setFlag(SpriteFlag.AutoDestroy, true)
+    }
 })
